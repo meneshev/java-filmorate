@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -15,11 +15,10 @@ import java.util.Map;
 public class FilmController {
     private final Map<Long, Film> movies = new HashMap<>();
 
-//TODO make logs and tests
     @GetMapping
-    public Collection<Film> findAll() {
+    public List<Film> findAll() {
         log.info("Request GET /films received");
-        return movies.values();
+        return movies.values().stream().toList();
     }
 
     @PostMapping

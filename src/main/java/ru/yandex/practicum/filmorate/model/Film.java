@@ -18,7 +18,7 @@ public class Film {
     @NotBlank
     private String name;
 
-    @Pattern(regexp = "^.{1,200}$")
+    @Size(max = 200)
     private String description;
 
     @IsAfter(current = "1895-12-27")
