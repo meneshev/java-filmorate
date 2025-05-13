@@ -16,6 +16,29 @@ class UserControllerTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
+    @Test
+    void getUserById() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> postRequest = new HttpEntity<>("{\"login\":\"login\",\"email\":\"email@mail.com\"," +
+                "\"birthday\":\"1995-01-01\",\"name\":\"name\"}", httpHeaders);
+
+        ResponseEntity<User> postResponse = restTemplate.postForEntity(
+                "/users",
+                postRequest,
+                User.class
+        );
+
+        assertEquals(HttpStatus.OK, postResponse.getStatusCode());
+        assertNotNull(Objects.requireNonNull(postResponse.getBody()));
+
+        ResponseEntity<User> getResponse = restTemplate.getForEntity(
+                "/users/1",
+                User.class
+        );
+        assertEquals(HttpStatus.OK, postResponse.getStatusCode());
+        assertNotNull(Objects.requireNonNull(getResponse.getBody()));
+    }
 
     @Test
     void findAll() {
@@ -252,5 +275,227 @@ class UserControllerTest {
         );
         assertEquals(HttpStatus.BAD_REQUEST, postResponse.getStatusCode());
         assertNotNull(Objects.requireNonNull(postResponse.getBody()));
+    }
+
+    @Test
+    public void addFriendTest() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> postRequest = new HttpEntity<>("{\"login\":\"login\",\"email\":\"email@mail.com\"," +
+                "\"birthday\":\"1995-01-01\",\"name\":\"name\"}", httpHeaders);
+
+        ResponseEntity<User> postResponse = restTemplate.postForEntity(
+                "/users",
+                postRequest,
+                User.class
+        );
+
+        assertEquals(HttpStatus.OK, postResponse.getStatusCode());
+        assertNotNull(Objects.requireNonNull(postResponse.getBody()));
+
+        httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        postRequest = new HttpEntity<>("{\"login\":\"login\",\"email\":\"email@mail.com\"," +
+                "\"birthday\":\"1995-01-01\",\"name\":\"name\"}", httpHeaders);
+
+        postResponse = restTemplate.postForEntity(
+                "/users",
+                postRequest,
+                User.class
+        );
+
+        assertEquals(HttpStatus.OK, postResponse.getStatusCode());
+        assertNotNull(Objects.requireNonNull(postResponse.getBody()));
+
+        httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> putRequest = new HttpEntity<>(httpHeaders);
+
+        ResponseEntity<User> putResponse = restTemplate.exchange(
+                "/users/1/friends/1", HttpMethod.PUT, putRequest, User.class);
+
+        assertEquals(HttpStatus.OK, putResponse.getStatusCode());
+        assertNotNull(Objects.requireNonNull(putResponse.getBody()));
+    }
+
+    @Test
+    void deleteFriendTest() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> postRequest = new HttpEntity<>("{\"login\":\"login\",\"email\":\"email@mail.com\"," +
+                "\"birthday\":\"1995-01-01\",\"name\":\"name\"}", httpHeaders);
+
+        ResponseEntity<User> postResponse = restTemplate.postForEntity(
+                "/users",
+                postRequest,
+                User.class
+        );
+
+        assertEquals(HttpStatus.OK, postResponse.getStatusCode());
+        assertNotNull(Objects.requireNonNull(postResponse.getBody()));
+
+        httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        postRequest = new HttpEntity<>("{\"login\":\"login\",\"email\":\"email@mail.com\"," +
+                "\"birthday\":\"1995-01-01\",\"name\":\"name\"}", httpHeaders);
+
+        postResponse = restTemplate.postForEntity(
+                "/users",
+                postRequest,
+                User.class
+        );
+
+        assertEquals(HttpStatus.OK, postResponse.getStatusCode());
+        assertNotNull(Objects.requireNonNull(postResponse.getBody()));
+
+        httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> putRequest = new HttpEntity<>(httpHeaders);
+
+        ResponseEntity<User> putResponse = restTemplate.exchange(
+                "/users/1/friends/1", HttpMethod.PUT, putRequest, User.class);
+
+        assertEquals(HttpStatus.OK, putResponse.getStatusCode());
+        assertNotNull(Objects.requireNonNull(putResponse.getBody()));
+
+        httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> deleteRequest = new HttpEntity<>(httpHeaders);
+
+        ResponseEntity<User> deleteResponse = restTemplate.exchange(
+                "/users/1/friends/1", HttpMethod.DELETE, deleteRequest, User.class);
+
+        assertEquals(HttpStatus.OK, deleteResponse.getStatusCode());
+        assertNotNull(Objects.requireNonNull(deleteResponse.getBody()));
+    }
+
+    @Test
+    void getFriendsByUserId() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> postRequest = new HttpEntity<>("{\"login\":\"login\",\"email\":\"email@mail.com\"," +
+                "\"birthday\":\"1995-01-01\",\"name\":\"name\"}", httpHeaders);
+
+        ResponseEntity<User> postResponse = restTemplate.postForEntity(
+                "/users",
+                postRequest,
+                User.class
+        );
+
+        assertEquals(HttpStatus.OK, postResponse.getStatusCode());
+        assertNotNull(Objects.requireNonNull(postResponse.getBody()));
+
+        httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        postRequest = new HttpEntity<>("{\"login\":\"login\",\"email\":\"email@mail.com\"," +
+                "\"birthday\":\"1995-01-01\",\"name\":\"name\"}", httpHeaders);
+
+        postResponse = restTemplate.postForEntity(
+                "/users",
+                postRequest,
+                User.class
+        );
+
+        assertEquals(HttpStatus.OK, postResponse.getStatusCode());
+        assertNotNull(Objects.requireNonNull(postResponse.getBody()));
+
+        httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> putRequest = new HttpEntity<>(httpHeaders);
+
+        ResponseEntity<User> putResponse = restTemplate.exchange(
+                "/users/1/friends/1", HttpMethod.PUT, putRequest, User.class);
+
+        assertEquals(HttpStatus.OK, putResponse.getStatusCode());
+        assertNotNull(Objects.requireNonNull(putResponse.getBody()));
+
+        ResponseEntity<User[]> getResponse = restTemplate.getForEntity(
+                "/users/1/friends",
+                User[].class
+        );
+        assertEquals(HttpStatus.OK, postResponse.getStatusCode());
+        assertNotNull(Objects.requireNonNull(getResponse.getBody()));
+    }
+
+    @Test
+    void getMutualFriendsByUserId() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> postRequest = new HttpEntity<>("{\"login\":\"login\",\"email\":\"email@mail.com\"," +
+                "\"birthday\":\"1995-01-01\",\"name\":\"name\"}", httpHeaders);
+
+        ResponseEntity<User> postResponse = restTemplate.postForEntity(
+                "/users",
+                postRequest,
+                User.class
+        );
+
+        assertEquals(HttpStatus.OK, postResponse.getStatusCode());
+        assertNotNull(Objects.requireNonNull(postResponse.getBody()));
+
+        httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        postRequest = new HttpEntity<>("{\"login\":\"login\",\"email\":\"email@mail.com\"," +
+                "\"birthday\":\"1995-01-01\",\"name\":\"name\"}", httpHeaders);
+
+        postResponse = restTemplate.postForEntity(
+                "/users",
+                postRequest,
+                User.class
+        );
+
+        assertEquals(HttpStatus.OK, postResponse.getStatusCode());
+        assertNotNull(Objects.requireNonNull(postResponse.getBody()));
+
+        httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        postRequest = new HttpEntity<>("{\"login\":\"login\",\"email\":\"email@mail.com\"," +
+                "\"birthday\":\"1995-01-01\",\"name\":\"name\"}", httpHeaders);
+
+        postResponse = restTemplate.postForEntity(
+                "/users",
+                postRequest,
+                User.class
+        );
+
+        assertEquals(HttpStatus.OK, postResponse.getStatusCode());
+        assertNotNull(Objects.requireNonNull(postResponse.getBody()));
+
+        httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> putRequest = new HttpEntity<>(httpHeaders);
+
+        ResponseEntity<User> putResponse = restTemplate.exchange(
+                "/users/1/friends/1", HttpMethod.PUT, putRequest, User.class);
+
+        assertEquals(HttpStatus.OK, putResponse.getStatusCode());
+        assertNotNull(Objects.requireNonNull(putResponse.getBody()));
+
+        httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        putRequest = new HttpEntity<>(httpHeaders);
+
+        putResponse = restTemplate.exchange(
+                "/users/1/friends/3", HttpMethod.PUT, putRequest, User.class);
+
+        assertEquals(HttpStatus.OK, putResponse.getStatusCode());
+        assertNotNull(Objects.requireNonNull(putResponse.getBody()));
+
+        httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        putRequest = new HttpEntity<>(httpHeaders);
+
+        putResponse = restTemplate.exchange(
+                "/users/2/friends/3", HttpMethod.PUT, putRequest, User.class);
+
+        assertEquals(HttpStatus.OK, putResponse.getStatusCode());
+        assertNotNull(Objects.requireNonNull(putResponse.getBody()));
+
+        ResponseEntity<User[]> getResponse = restTemplate.getForEntity(
+                "/users/1/friends/common/2",
+                User[].class
+        );
+        assertEquals(HttpStatus.OK, postResponse.getStatusCode());
+        assertNotNull(Objects.requireNonNull(getResponse.getBody()));
     }
 }

@@ -1,67 +1,58 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import java.util.HashMap;
+import ru.yandex.practicum.filmorate.service.UserService;
 import java.util.List;
-import java.util.Map;
 
-@Slf4j
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private final Map<Long, User> users = new HashMap<>();
+
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping(value = "/{id}")
+    public User getUserById(@PathVariable Long id) {
+        return userService.getUserById(id).get();
+    }
 
     @GetMapping
     public List<User> findAll() {
-        log.info("Request GET /users received");
-        return users.values().stream().toList();
+        return userService.findAll();
     }
 
     @PostMapping
     public User create(@Valid @RequestBody User newUser) {
-        log.info("Request POST /users received, body:{}", newUser);
-        if (newUser.getId() != null) {
-            log.error("Request POST /users, request body has id");
-            throw new ValidationException("При добавлении нового пользователя не нужно указывать id");
-        }
-
-        newUser.setId(getNextId());
-        if (newUser.getName() == null) {
-            newUser.setName(newUser.getLogin());
-        }
-        users.put(newUser.getId(), newUser);
-        log.info("Request POST /users, create new object:{}", newUser);
-        return newUser;
+        return userService.create(newUser);
     }
 
     @PutMapping
     public User update(@Valid @RequestBody User newUser) {
-        log.info("Request PUT /users received, body:{}", newUser);
-        if (newUser.getId() == null) {
-            log.error("Request PUT /users, request body hasn't id");
-            throw new ValidationException("При изменении пользователя необходимо указание id");
-        }
-
-        if (!users.containsKey(newUser.getId())) {
-            log.error("Request PUT /users, id {} not found", newUser.getId());
-            throw new ValidationException("Указан несуществующий id");
-        }
-
-        if (newUser.getName() == null) {
-            newUser.setName(newUser.getLogin());
-        }
-        users.put(newUser.getId(), newUser);
-        log.info("Request PUT /users, updated object:{}", newUser);
-        return newUser;
+        return userService.update(newUser);
     }
 
-    private Long getNextId() {
-        return users.keySet().stream()
-                .max(Long::compareTo)
-                .orElse(0L) + 1L;
+    @GetMapping(value = "/{id}/friends/common/{otherId}")
+    public List<User> getMutualFriends(@PathVariable Long id, @PathVariable Long otherId) {
+        return userService.getMutualFriends(id, otherId);
+    }
+
+    @GetMapping(value = "/{id}/friends")
+    public List<User> getFriends(@PathVariable Long id) {
+        return userService.getFriendsByUserId(id);
+    }
+
+    @PutMapping(value = "/{id}/friends/{friendId}")
+    public User addFriend(@PathVariable Long id, @PathVariable Long friendId) {
+        return userService.addFriend(id, friendId);
+    }
+
+    @DeleteMapping(value = "/{id}/friends/{friendId}")
+    public User deleteFriend(@PathVariable Long id, @PathVariable Long friendId) {
+        return userService.deleteFriend(id, friendId);
     }
 }
