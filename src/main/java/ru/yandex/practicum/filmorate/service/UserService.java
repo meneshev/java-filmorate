@@ -87,11 +87,6 @@ public class UserService {
             throw new ObjectNotFoundException("Указан несуществующий идентификатор пользователя", friendId);
         }
 
-        if (!userStorage.getUserById(id).get().getFriends().contains(friendId)) {
-            log.error("User with id:{} is not a friend of user with id:{}", id, friendId);
-            throw new ValidationException("Данного пользователя нет в друзьях", friendId.toString());
-        }
-
         userStorage.deleteFriend(id, friendId);
         log.info("user with id:{} deleted friend with user with id:{}", id, friendId);
         return userStorage.getUserById(id).get();
