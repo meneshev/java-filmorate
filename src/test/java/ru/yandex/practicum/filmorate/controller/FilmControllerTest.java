@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 import java.time.LocalDate;
 import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,6 +16,30 @@ class FilmControllerTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
+
+    @Test
+    void getFilmById() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> postRequest = new HttpEntity<>("{\"name\":\"name\",\"description\":\"description\"," +
+                "\"releaseDate\":\"1899-01-01\",\"duration\":120}", httpHeaders);
+
+        ResponseEntity<Film> postResponse = restTemplate.postForEntity(
+                "/films",
+                postRequest,
+                Film.class
+        );
+
+        assertEquals(HttpStatus.OK, postResponse.getStatusCode());
+        assertNotNull(Objects.requireNonNull(postResponse.getBody()));
+
+        ResponseEntity<Film> getResponse = restTemplate.getForEntity(
+                "/films/1",
+                Film.class
+        );
+        assertEquals(HttpStatus.OK, postResponse.getStatusCode());
+        assertNotNull(Objects.requireNonNull(getResponse.getBody()));
+    }
 
     @Test
     void findAll() {
@@ -98,7 +123,7 @@ class FilmControllerTest {
     }
 
     @Test
-    public void testValidations() {
+    void testValidations() {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
@@ -220,5 +245,121 @@ class FilmControllerTest {
                 Film.class
         );
         assertEquals(HttpStatus.OK, postResponse.getStatusCode());
+    }
+
+    @Test
+    void addLikeTest() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> postRequest = new HttpEntity<>("{\"name\":\"name\",\"description\":\"description\"," +
+                "\"releaseDate\":\"1899-01-01\",\"duration\":120}", httpHeaders);
+
+        ResponseEntity<Film> postResponse = restTemplate.postForEntity(
+                "/films",
+                postRequest,
+                Film.class
+        );
+
+        assertEquals(HttpStatus.OK, postResponse.getStatusCode());
+        assertNotNull(Objects.requireNonNull(postResponse.getBody()));
+
+        httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        postRequest = new HttpEntity<>("{\"login\":\"login\",\"email\":\"email@mail.com\"," +
+                "\"birthday\":\"1995-01-01\",\"name\":\"name\"}", httpHeaders);
+
+        ResponseEntity<User> postResponseUser = restTemplate.postForEntity(
+                "/users",
+                postRequest,
+                User.class
+        );
+
+        assertEquals(HttpStatus.OK, postResponseUser.getStatusCode());
+        assertNotNull(Objects.requireNonNull(postResponseUser.getBody()));
+
+        httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> putRequest = new HttpEntity<>(httpHeaders);
+
+        ResponseEntity<Film> putResponse = restTemplate.exchange(
+                "/films/1/like/1", HttpMethod.PUT, putRequest, Film.class);
+
+        assertEquals(HttpStatus.OK, putResponse.getStatusCode());
+        assertNotNull(Objects.requireNonNull(putResponse.getBody()));
+    }
+
+    @Test
+    void deleteLikeTest() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> postRequest = new HttpEntity<>("{\"name\":\"name\",\"description\":\"description\"," +
+                "\"releaseDate\":\"1899-01-01\",\"duration\":120}", httpHeaders);
+
+        ResponseEntity<Film> postResponse = restTemplate.postForEntity(
+                "/films",
+                postRequest,
+                Film.class
+        );
+
+        assertEquals(HttpStatus.OK, postResponse.getStatusCode());
+        assertNotNull(Objects.requireNonNull(postResponse.getBody()));
+
+        httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        postRequest = new HttpEntity<>("{\"login\":\"login\",\"email\":\"email@mail.com\"," +
+                "\"birthday\":\"1995-01-01\",\"name\":\"name\"}", httpHeaders);
+
+        ResponseEntity<User> postResponseUser = restTemplate.postForEntity(
+                "/users",
+                postRequest,
+                User.class
+        );
+
+        assertEquals(HttpStatus.OK, postResponseUser.getStatusCode());
+        assertNotNull(Objects.requireNonNull(postResponseUser.getBody()));
+
+        httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> putRequest = new HttpEntity<>(httpHeaders);
+
+        ResponseEntity<Film> putResponse = restTemplate.exchange(
+                "/films/1/like/1", HttpMethod.PUT, putRequest, Film.class);
+
+        assertEquals(HttpStatus.OK, putResponse.getStatusCode());
+        assertNotNull(Objects.requireNonNull(putResponse.getBody()));
+
+        httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> deleteRequest = new HttpEntity<>(httpHeaders);
+
+        ResponseEntity<Film> deleteResponse = restTemplate.exchange(
+                "/films/1/like/1", HttpMethod.DELETE, deleteRequest, Film.class);
+
+        assertEquals(HttpStatus.OK, deleteResponse.getStatusCode());
+        assertNotNull(Objects.requireNonNull(deleteResponse.getBody()));
+    }
+
+    @Test
+    void getPopularFilms() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> postRequest = new HttpEntity<>("{\"name\":\"name\",\"description\":\"description\"," +
+                "\"releaseDate\":\"1899-01-01\",\"duration\":120}", httpHeaders);
+
+        ResponseEntity<Film> postResponse = restTemplate.postForEntity(
+                "/films",
+                postRequest,
+                Film.class
+        );
+
+        assertEquals(HttpStatus.OK, postResponse.getStatusCode());
+        assertNotNull(Objects.requireNonNull(postResponse.getBody()));
+
+        ResponseEntity<Film[]> getResponse = restTemplate.getForEntity(
+                "/films/popular",
+                Film[].class
+        );
+        assertEquals(HttpStatus.OK, postResponse.getStatusCode());
+        assertNotNull(Objects.requireNonNull(getResponse.getBody()));
     }
 }
