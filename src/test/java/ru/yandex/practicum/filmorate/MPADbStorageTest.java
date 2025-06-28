@@ -33,9 +33,9 @@ public class MPADbStorageTest {
 
     @Test
     void shouldGetAllMPAs() {
-        List<MPA> MPAs = mpaDbStorage.getAllMPAs();
+        List<MPA> mpas = mpaDbStorage.getAllMPAs();
 
-        assertThat(MPAs)
+        assertThat(mpas)
                 .extracting(MPA::getName)
                 .contains("G", "PG");
     }
