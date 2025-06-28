@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 public class GenreDbStorage extends BaseStorage<Genre> implements GenresStorage {
-    private static final String GET_GENRE_BY_ID_SQL = """
+    private static final String getGenreByIdSql = """
             SELECT
             	GENRE_ID,
             	GENRE_NAME
@@ -18,7 +18,7 @@ public class GenreDbStorage extends BaseStorage<Genre> implements GenresStorage 
             WHERE GENRE_ID = ?
             """;
 
-    private static final String GET_ALL_GENRES_SQL = """
+    private static final String getAllGenresSql = """
             SELECT
             	GENRE_ID,
             	GENRE_NAME
@@ -32,11 +32,11 @@ public class GenreDbStorage extends BaseStorage<Genre> implements GenresStorage 
 
     @Override
     public Optional<Genre> getGenreById(Long genreId) {
-        return findOne(GET_GENRE_BY_ID_SQL, genreId);
+        return findOne(getGenreByIdSql, genreId);
     }
 
     @Override
     public List<Genre> getAllGenres() {
-        return findMany(GET_ALL_GENRES_SQL);
+        return findMany(getAllGenresSql);
     }
 }

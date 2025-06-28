@@ -14,7 +14,7 @@ import java.util.Map;
 @Slf4j
 @Component
 public class UserRowMapper implements RowMapper<User> {
-    private final String GET_ACCEPTED_FRIENDS_BY_USER_ID = """
+    private final String getAcceptedFriendsByUserId = """
             SELECT
             	ADDED_USER_ID
             FROM FRIEND
@@ -22,7 +22,7 @@ public class UserRowMapper implements RowMapper<User> {
             AND ISACCEPTED = true
             """;
 
-    private final String GET_FRIENDS_BY_USER_ID = """
+    private final String getFriendsByUserId = """
             SELECT
             	ADDED_USER_ID, ISACCEPTED
             FROM FRIEND
@@ -46,7 +46,7 @@ public class UserRowMapper implements RowMapper<User> {
 
         Map<Long, Boolean> friends = new LinkedHashMap<>();
         jdbcTemplate.query(
-                GET_FRIENDS_BY_USER_ID,
+                getFriendsByUserId,
                 rs1 -> {
                     while (rs1.next()) {
                         friends.put(

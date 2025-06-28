@@ -14,7 +14,7 @@ import java.util.Optional;
 @Repository
 @Qualifier("filmDbStorage")
 public class FilmDbStorage extends BaseStorage<Film> implements FilmStorage  {
-    private static final String FIND_FILM_BY_ID_SQL = """
+    private static final String findFilByIdSql = """
             SELECT
                 f.FILM_ID,
                 f.FILM_NAME,
@@ -29,7 +29,7 @@ public class FilmDbStorage extends BaseStorage<Film> implements FilmStorage  {
             WHERE f.FILM_ID = ?
             """;
 
-    private static final String FIND_ALL_FILMS_SQL = """
+    private static final String findAllFilmsSql = """
             SELECT
                 f.FILM_ID,
                 f.FILM_NAME,
@@ -43,21 +43,21 @@ public class FilmDbStorage extends BaseStorage<Film> implements FilmStorage  {
             LEFT JOIN MPA m ON m.MPA_ID = f.RATING_ID
             """;
 
-    private static final String CREATE_FILM_SQL = """
+    private static final String createFilmSql = """
             INSERT INTO PUBLIC.FILM
             (FILM_NAME, FILM_DESCRIPTION, FILM_RELEASEDATE, FILM_DURATION, RATING_ID)
             VALUES
             (?, ?, ?, ?, ?)
             """;
 
-    private static final String ADD_GENRE_TO_FILM_SQL = """
+    private static final String addGenreToFilmSql = """
             INSERT INTO PUBLIC.FILM_GENRES
             (FILM_ID, GENRE_ID)
             VALUES
             (?, ?)
             """;
 
-    private static final String UPDATE_FILM_SQL = """
+    private static final String updateFilmSql = """
             UPDATE PUBLIC.FILM
             SET FILM_NAME=?,
             FILM_DESCRIPTION=?,
@@ -67,17 +67,17 @@ public class FilmDbStorage extends BaseStorage<Film> implements FilmStorage  {
             WHERE FILM_ID=?;
             """;
 
-    private static final String DELETE_FILM_GENRES_SQL = """
+    private static final String deleteFilmGenresSql = """
             DELETE FROM FILM_GENRES
             WHERE FILM_ID = ?
             """;
 
-    private static final String DELETE_FILM_SQL = """
+    private static final String deleteFilmSql = """
             DELETE FROM FILM
             WHERE FILM_ID = ?
             """;
 
-    private static final String ADD_FILM_LIKE_SQL = """
+    private static final String addFilmLikeSql = """
             INSERT INTO PUBLIC.FILM_LIKES (FILM_ID, USER_ID)
             SELECT t.* FROM (VALUES (?, ?)) AS t(FILM_ID, USER_ID)
             WHERE NOT EXISTS (
@@ -86,18 +86,18 @@ public class FilmDbStorage extends BaseStorage<Film> implements FilmStorage  {
               AND USER_ID = t.USER_ID)
             """;
 
-    private static final String DELETE_FILM_LIKE_SQL = """
+    private static final String deleteFilmLikeSql = """
             DELETE FROM FILM_LIKES
             WHERE FILM_ID = ? AND USER_ID = ?
             """;
 
-    private static final String GET_FILM_LIKES_SQL = """
+    private static final String getFilmLikesSql = """
             SELECT COUNT(fl.*)
             FROM FILM_LIKES fl
             WHERE fl.FILM_ID = ?
             """;
 
-    private static final String GET_POPULAR_FILM_LIKES_SQL = """
+    private static final String getPopularFilmLikesSql = """
             SELECT
               f.FILM_ID,
               f.FILM_NAME,
@@ -117,7 +117,7 @@ public class FilmDbStorage extends BaseStorage<Film> implements FilmStorage  {
             ORDER BY likes DESC
             """;
 
-    private static final String GET_POPULAR_FILM_LIKES_LIMIT_SQL = """
+    private static final String getPopularFilmLikesLimitSql = """
             SELECT
               f.FILM_ID,
               f.FILM_NAME,
@@ -148,7 +148,7 @@ public class FilmDbStorage extends BaseStorage<Film> implements FilmStorage  {
 
     @Override
     public Film create(Film film) {
-        Long id = insert(CREATE_FILM_SQL,
+        Long id = insert(createFilmSql,
                 film.getName(),
                 film.getDescription(),
                 film.getReleaseDate(),
@@ -162,7 +162,7 @@ public class FilmDbStorage extends BaseStorage<Film> implements FilmStorage  {
                     .stream()
                     .sorted(Comparator.comparingLong(g -> g.getId()))
                     .forEach(genre -> {
-                jdbcTemplate.update(ADD_GENRE_TO_FILM_SQL,
+                jdbcTemplate.update(addGenreToFilmSql,
                         film.getId(), genre.getId());
             });
         }
@@ -171,7 +171,7 @@ public class FilmDbStorage extends BaseStorage<Film> implements FilmStorage  {
 
     @Override
     public Film update(Film film) {
-        update(UPDATE_FILM_SQL,
+        update(updateFilmSql,
                 film.getName(),
                 film.getDescription(),
                 film.getReleaseDate(),
@@ -180,14 +180,14 @@ public class FilmDbStorage extends BaseStorage<Film> implements FilmStorage  {
                 film.getId());
 
         if (!film.getGenres().isEmpty()) {
-            jdbcTemplate.update(DELETE_FILM_GENRES_SQL,
+            jdbcTemplate.update(deleteFilmGenresSql,
                     film.getId());
 
             film.getGenres()
                     .stream()
                     .sorted(Comparator.comparingLong(g -> g.getId()))
                     .forEach(genre -> {
-                jdbcTemplate.update(ADD_GENRE_TO_FILM_SQL,
+                jdbcTemplate.update(addGenreToFilmSql,
                         film.getId(), genre.getId());
             });
         }
@@ -197,43 +197,43 @@ public class FilmDbStorage extends BaseStorage<Film> implements FilmStorage  {
 
     @Override
     public void delete(Long id) {
-        delete(DELETE_FILM_SQL, id);
+        delete(deleteFilmSql, id);
     }
 
     @Override
     public List<Film> getAllFilms() {
-        return findMany(FIND_ALL_FILMS_SQL);
+        return findMany(findAllFilmsSql);
     }
 
     @Override
     public Optional<Film> getFilmById(Long id) {
-        return findOne(FIND_FILM_BY_ID_SQL, id);
+        return findOne(findFilByIdSql, id);
     }
 
     @Override
     public void addLike(Long filmId, Long userId) {
-        jdbcTemplate.update(ADD_FILM_LIKE_SQL,
+        jdbcTemplate.update(addFilmLikeSql,
                 filmId, userId);
     }
 
     @Override
     public void deleteLike(Long filmId, Long userId) {
-        jdbcTemplate.update(DELETE_FILM_LIKE_SQL,
+        jdbcTemplate.update(deleteFilmLikeSql,
                 filmId, userId);
     }
 
     @Override
     public Integer getLikesCount(Long filmId) {
-        Integer count = jdbcTemplate.queryForObject(GET_FILM_LIKES_SQL, Integer.class, filmId);
+        Integer count = jdbcTemplate.queryForObject(getFilmLikesSql, Integer.class, filmId);
         return count != null ? count : 0;
     }
 
     @Override
     public List<Film> getPopularFilms(Integer count) {
         if (count == null) {
-            return findMany(GET_POPULAR_FILM_LIKES_SQL);
+            return findMany(getPopularFilmLikesSql);
         } else {
-            return jdbcTemplate.query(GET_POPULAR_FILM_LIKES_LIMIT_SQL, filmRowMapper, count);
+            return jdbcTemplate.query(getPopularFilmLikesLimitSql, filmRowMapper, count);
         }
     }
 }

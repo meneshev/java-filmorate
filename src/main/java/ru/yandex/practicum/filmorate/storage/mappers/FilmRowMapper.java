@@ -17,7 +17,7 @@ import java.util.Set;
 @Slf4j
 @Component
 public class FilmRowMapper implements RowMapper<Film> {
-    private final String GET_GENRES_BY_FILM_ID = """
+    private final String getGenresByFilmId = """
             SELECT
                 g.GENRE_ID,
                 g.GENRE_NAME
@@ -26,14 +26,14 @@ public class FilmRowMapper implements RowMapper<Film> {
             WHERE fg.FILM_ID = ?
             """;
 
-    private final String GET_LIKES_BY_FILM_ID = """
+    private final String getLikesByFilmId = """
             SELECT
                 fl.USER_ID
             FROM FILM_LIKES fl
             WHERE fl.FILM_ID = ?
             """;
 
-    private final String CREATE_USER_SQL = """
+    private final String createUserSql = """
             INSERT INTO PUBLIC.`USER`
             (USER_EMAIL, USER_LOGIN, USER_NAME, USER_BIRTHDAY)
             VALUES(?, ?, ?, ?);
@@ -62,12 +62,12 @@ public class FilmRowMapper implements RowMapper<Film> {
         }
 
         Set<Genre> genres = new LinkedHashSet<Genre>(
-                jdbcTemplate.query(GET_GENRES_BY_FILM_ID, new GenreRowMapper(), film.getId())
+                jdbcTemplate.query(getGenresByFilmId, new GenreRowMapper(), film.getId())
         );
         film.setGenres(genres);
 
         Set<Long> likes = new HashSet<>(
-                jdbcTemplate.queryForList(GET_LIKES_BY_FILM_ID, Long.class, film.getId())
+                jdbcTemplate.queryForList(getLikesByFilmId, Long.class, film.getId())
         );
         film.setLikes(likes);
 

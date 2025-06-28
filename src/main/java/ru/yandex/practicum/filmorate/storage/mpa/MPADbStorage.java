@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 public class MPADbStorage extends BaseStorage<MPA> implements MPAStorage {
-    private static final String GET_MPA_BY_ID_SQL = """
+    private static final String getMPAByIdSql = """
             SELECT
             	MPA_ID,
             	MPA_NAME
@@ -18,7 +18,7 @@ public class MPADbStorage extends BaseStorage<MPA> implements MPAStorage {
             WHERE MPA_ID = ?
             """;
 
-    private static final String GET_ALL_MPAS_SQL = """
+    private static final String getAllMPAsSql = """
             SELECT
             	MPA_ID,
             	MPA_NAME
@@ -32,11 +32,11 @@ public class MPADbStorage extends BaseStorage<MPA> implements MPAStorage {
 
     @Override
     public Optional<MPA> getMPAById(Long id) {
-        return findOne(GET_MPA_BY_ID_SQL, id);
+        return findOne(getMPAByIdSql, id);
     }
 
     @Override
     public List<MPA> getAllMPAs() {
-        return findMany(GET_ALL_MPAS_SQL);
+        return findMany(getAllMPAsSql);
     }
 }

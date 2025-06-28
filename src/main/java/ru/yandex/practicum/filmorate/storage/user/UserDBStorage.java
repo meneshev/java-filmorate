@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 @Qualifier("userDbStorage")
 public class UserDBStorage extends BaseStorage<User> implements UserStorage {
-    private static final String GET_USER_BY_ID_SQL = """
+    private static final String getUserByIdSql = """
             SELECT
             	USER_ID,
             	USER_EMAIL,
@@ -24,7 +24,7 @@ public class UserDBStorage extends BaseStorage<User> implements UserStorage {
             WHERE USER_ID = ?
             """;
 
-    private static final String GET_ALL_USERS_SQL = """
+    private static final String getAllUsersSql = """
             SELECT
             	USER_ID,
             	USER_EMAIL,
@@ -35,24 +35,24 @@ public class UserDBStorage extends BaseStorage<User> implements UserStorage {
             ORDER BY USER_ID
             """;
 
-    private static final String UPDATE_USER_BY_ID_SQL = """
+    private static final String updateUserByIdSql = """
             UPDATE PUBLIC.`USER`
             SET USER_EMAIL=?, USER_LOGIN=?, USER_NAME=?, USER_BIRTHDAY=?
             WHERE USER_ID=?
             """;
 
-    private static final String CREATE_USER_BY_ID_SQL = """
+    private static final String createUserByIdSql = """
             INSERT INTO PUBLIC.`USER`
             (USER_EMAIL, USER_LOGIN, USER_NAME, USER_BIRTHDAY)
             VALUES(?, ?, ?, ?)
             """;
 
-    private static final String DELETE_USER_BY_ID_SQL = """
+    private static final String deleteUserByIdSql = """
             DELETE FROM PUBLIC.`USER`
             WHERE USER_ID = ?
             """;
 
-    private static final String GET_MUTUAL_FRIENDS_BY_USER_ID_SQL = """
+    private static final String getMutualFriendsSql = """
             SELECT
             	u.USER_ID,
             	u.USER_EMAIL,
@@ -70,7 +70,7 @@ public class UserDBStorage extends BaseStorage<User> implements UserStorage {
             )
             """;
 
-    private static final String GET_FRIENDS_BY_USER_ID_SQL = """
+    private static final String getFriendsSql = """
             SELECT
             	u.USER_ID,
             	u.USER_EMAIL,
@@ -82,7 +82,7 @@ public class UserDBStorage extends BaseStorage<User> implements UserStorage {
             WHERE f.ADDING_USER_ID = ?
             """;
 
-    private static final String ADD_FRIEND_BY_USER_ID_SQL = """
+    private static final String addFriendSql = """
             INSERT INTO PUBLIC.FRIEND (ADDING_USER_ID, ADDED_USER_ID, ISACCEPTED)
             SELECT t.* FROM (VALUES (?, ?, false))
             	AS t(ADDING_ID, ADDED_ID, ACCEPTED)
@@ -93,7 +93,7 @@ public class UserDBStorage extends BaseStorage<User> implements UserStorage {
             )
             """;
 
-    private static final String DELETE_FRIEND_BY_USER_ID_SQL = """
+    private static final String deleteFriendSql = """
             DELETE FROM PUBLIC.FRIEND
             WHERE ADDING_USER_ID = ?
             AND ADDED_USER_ID = ?
@@ -108,7 +108,7 @@ public class UserDBStorage extends BaseStorage<User> implements UserStorage {
 
     @Override
     public User create(User user) {
-        Long id = insert(CREATE_USER_BY_ID_SQL,
+        Long id = insert(createUserByIdSql,
                 user.getEmail(),
                 user.getLogin(),
                 user.getName(),
@@ -121,7 +121,7 @@ public class UserDBStorage extends BaseStorage<User> implements UserStorage {
 
     @Override
     public User update(User user) {
-        update(UPDATE_USER_BY_ID_SQL,
+        update(updateUserByIdSql,
                 user.getEmail(),
                 user.getLogin(),
                 user.getName(),
@@ -133,36 +133,36 @@ public class UserDBStorage extends BaseStorage<User> implements UserStorage {
 
     @Override
     public void delete(Long id) {
-        delete(DELETE_USER_BY_ID_SQL, id);
+        delete(deleteUserByIdSql, id);
     }
 
     @Override
     public List<User> getAllUsers() {
-        return findMany(GET_ALL_USERS_SQL);
+        return findMany(getAllUsersSql);
     }
 
     @Override
     public Optional<User> getUserById(Long id) {
-        return findOne(GET_USER_BY_ID_SQL, id);
+        return findOne(getUserByIdSql, id);
     }
 
     @Override
     public void addFriend(Long userId, Long friendUserId) {
-        jdbcTemplate.update(ADD_FRIEND_BY_USER_ID_SQL, userId, friendUserId);
+        jdbcTemplate.update(addFriendSql, userId, friendUserId);
     }
 
     @Override
     public void deleteFriend(Long userId, Long friendUserId) {
-        jdbcTemplate.update(DELETE_FRIEND_BY_USER_ID_SQL, userId, friendUserId);
+        jdbcTemplate.update(deleteFriendSql, userId, friendUserId);
     }
 
     @Override
     public List<User> getFriendsByUserId(Long userId) {
-        return jdbcTemplate.query(GET_FRIENDS_BY_USER_ID_SQL, userRowMapper, userId);
+        return jdbcTemplate.query(getFriendsSql, userRowMapper, userId);
     }
 
     @Override
     public List<User> getMutualFriends(Long userId, Long otherUserId) {
-        return jdbcTemplate.query(GET_MUTUAL_FRIENDS_BY_USER_ID_SQL, userRowMapper, userId, otherUserId);
+        return jdbcTemplate.query(getMutualFriendsSql, userRowMapper, userId, otherUserId);
     }
 }
