@@ -105,7 +105,7 @@ public final class FilmMapper {
         }
         if (request.getGenres() != null) {
             Set<Genre> genres = request.getGenres().stream()
-                    .map(genreElement-> {
+                    .map(genreElement -> {
                         Genre genre = new Genre();
                         genre.setId(genreElement.getId());
                         return genre;
