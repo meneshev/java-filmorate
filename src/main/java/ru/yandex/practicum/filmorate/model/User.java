@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
-import lombok.Builder;
 import lombok.Data;
 import java.time.LocalDate;
 import java.util.HashMap;
