@@ -58,7 +58,7 @@ public class UserDBStorage extends BaseStorage<User> implements UserStorage {
             	u.USER_EMAIL,
             	u.USER_LOGIN,
             	u.USER_NAME,
-            	u.USER_BIRTHDAY	
+            	u.USER_BIRTHDAY
             FROM FRIEND f
             INNER JOIN `USER` u ON u.USER_ID = f.ADDED_USER_ID
             WHERE f.ADDING_USER_ID = ?
@@ -76,7 +76,7 @@ public class UserDBStorage extends BaseStorage<User> implements UserStorage {
             	u.USER_EMAIL,
             	u.USER_LOGIN,
             	u.USER_NAME,
-            	u.USER_BIRTHDAY	
+            	u.USER_BIRTHDAY
             FROM FRIEND f
             INNER JOIN `USER` u ON u.USER_ID = f.ADDED_USER_ID
             WHERE f.ADDING_USER_ID = ?
