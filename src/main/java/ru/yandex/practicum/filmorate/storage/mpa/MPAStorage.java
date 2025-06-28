@@ -6,5 +6,6 @@ import java.util.Optional;
 
 public interface MPAStorage {
     Optional<MPA> getMPAById(Long id);
+
     List<MPA> getAllMPAs();
 }
