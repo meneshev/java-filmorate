@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.storage.mappers;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -10,11 +9,9 @@ import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-
-@Slf4j
 @Component
 public class UserRowMapper implements RowMapper<User> {
-    private final String getAcceptedFriendsByUserId = """
+    private static final String getAcceptedFriendsByUserId = """
             SELECT
             	ADDED_USER_ID
             FROM FRIEND
@@ -22,7 +19,7 @@ public class UserRowMapper implements RowMapper<User> {
             AND ISACCEPTED = true
             """;
 
-    private final String getFriendsByUserId = """
+    private static final String getFriendsByUserId = """
             SELECT
             	ADDED_USER_ID, ISACCEPTED
             FROM FRIEND

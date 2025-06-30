@@ -1,8 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dto.CreateFilmRequest;
 import ru.yandex.practicum.filmorate.dto.FilmDto;
@@ -18,30 +17,21 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class FilmService {
-    private final FilmStorage filmStorage;
-    private final UserStorage userStorage;
+    private final FilmStorage filmDbStorage;
+    private final UserStorage userDBStorage;
     private final GenreService genreService;
     private final MPAService mpaService;
 
-    @Autowired
-    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage,
-                       @Qualifier("userDbStorage") UserStorage userStorage,
-                       GenreService genreService, MPAService mpaService) {
-        this.filmStorage = filmStorage;
-        this.userStorage = userStorage;
-        this.genreService = genreService;
-        this.mpaService = mpaService;
-    }
-
     public List<FilmDto> findAll() {
-        return filmStorage.getAllFilms().stream()
+        return filmDbStorage.getAllFilms().stream()
                 .map(FilmMapper::mapToFilmDto)
                 .collect(Collectors.toList());
     }
 
     public FilmDto getFilmById(Long id) {
-        Film film = filmStorage.getFilmById(id)
+        Film film = filmDbStorage.getFilmById(id)
                 .orElseThrow(() -> {
                     log.error("Film not found");
                     return new ObjectNotFoundException("Не удалось найти фильм по указанному идентификатору", id);
@@ -58,7 +48,7 @@ public class FilmService {
         mpaService.getMPAById(request.getMpa().getId());
 
         Film film = FilmMapper.mapToFilm(request);
-        film = filmStorage.create(film);
+        film = filmDbStorage.create(film);
         log.info("new film was created: {}", film);
         return FilmMapper.mapToFilmDto(film);
     }
@@ -76,10 +66,10 @@ public class FilmService {
 
         Film film = FilmMapper.mapToFilm(request);
 
-        return FilmMapper.mapToFilmDto(filmStorage.getFilmById(film.getId())
+        return FilmMapper.mapToFilmDto(filmDbStorage.getFilmById(film.getId())
                 .map(existingFilm -> {
                     log.info("film was updated: {}", request);
-                    return filmStorage.update(film);
+                    return filmDbStorage.update(film);
                 })
                 .orElseThrow(() -> {
                     log.error("User specified wrong parameter in request body [film.id]");
@@ -90,30 +80,30 @@ public class FilmService {
     }
 
     public void addLike(Long filmId, Long userId) {
-        filmStorage.getFilmById(filmId)
+        filmDbStorage.getFilmById(filmId)
                 .orElseThrow(() -> {
                     log.error("User specified wrong path variable [filmId]");
                     return new ObjectNotFoundException("Указан несуществующий идентификатор фильма", filmId);
                 });
 
-        userStorage.getUserById(userId)
+        userDBStorage.getUserById(userId)
                 .orElseThrow(() -> {
                     log.error("User specified wrong path variable [userId]");
                     return new ObjectNotFoundException("Указан несуществующий идентификатор пользователя", userId);
                 });
 
         log.info("user with id:{} added like to film with id:{}", userId, filmId);
-        filmStorage.addLike(filmId, userId);
+        filmDbStorage.addLike(filmId, userId);
     }
 
     public void deleteLike(Long filmId, Long userId) {
-        userStorage.getUserById(userId)
+        userDBStorage.getUserById(userId)
                 .orElseThrow(() -> {
                     log.error("User specified wrong path variable [userId]");
                     return new ObjectNotFoundException("Указан несуществующий идентификатор пользователя", userId);
                 });
 
-        filmStorage.getFilmById(filmId)
+        filmDbStorage.getFilmById(filmId)
                 .map(film -> {
                     if (!film.getLikes().contains(userId)) {
                         log.error("User specified wrong path variable [userId]");
@@ -133,7 +123,7 @@ public class FilmService {
                 });
 
         log.info("user with id:{} deleted like to film with id:{}", userId, filmId);
-        filmStorage.deleteLike(filmId, userId);
+        filmDbStorage.deleteLike(filmId, userId);
     }
 
     public List<FilmDto> getPopularFilms(Integer count) {
@@ -141,7 +131,7 @@ public class FilmService {
             log.error("User specified wrong parameter [count]");
             throw new ValidationException("Параметр count должен быть больше нуля", count.toString());
         }
-        return filmStorage.getPopularFilms(count).stream()
+        return filmDbStorage.getPopularFilms(count).stream()
                 .map(FilmMapper::mapToFilmDto)
                 .collect(Collectors.toList());
     }

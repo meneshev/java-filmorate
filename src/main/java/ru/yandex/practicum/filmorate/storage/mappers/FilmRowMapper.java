@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.storage.mappers;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -14,10 +13,9 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-@Slf4j
 @Component
 public class FilmRowMapper implements RowMapper<Film> {
-    private final String getGenresByFilmId = """
+    private static final String getGenresByFilmId = """
             SELECT
                 g.GENRE_ID,
                 g.GENRE_NAME
@@ -26,14 +24,14 @@ public class FilmRowMapper implements RowMapper<Film> {
             WHERE fg.FILM_ID = ?
             """;
 
-    private final String getLikesByFilmId = """
+    private static final String getLikesByFilmId = """
             SELECT
                 fl.USER_ID
             FROM FILM_LIKES fl
             WHERE fl.FILM_ID = ?
             """;
 
-    private final String createUserSql = """
+    private static final String createUserSql = """
             INSERT INTO PUBLIC.`USER`
             (USER_EMAIL, USER_LOGIN, USER_NAME, USER_BIRTHDAY)
             VALUES(?, ?, ?, ?);
@@ -61,7 +59,7 @@ public class FilmRowMapper implements RowMapper<Film> {
             film.setMpa(mpa);
         }
 
-        Set<Genre> genres = new LinkedHashSet<Genre>(
+        Set<Genre> genres = new LinkedHashSet<>(
                 jdbcTemplate.query(getGenresByFilmId, new GenreRowMapper(), film.getId())
         );
         film.setGenres(genres);
