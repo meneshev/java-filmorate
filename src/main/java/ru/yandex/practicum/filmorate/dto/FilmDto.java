@@ -1,10 +1,13 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.MPA;
 import ru.yandex.practicum.filmorate.model.deserializer.MinutesToDurationDeserializer;
 import ru.yandex.practicum.filmorate.model.serializer.DurationToMinutesSerializer;
 import ru.yandex.practicum.filmorate.model.validation.annotation.IsAfter;
@@ -16,7 +19,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 @Data
-public class Film {
+public class FilmDto {
     private Long id;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)

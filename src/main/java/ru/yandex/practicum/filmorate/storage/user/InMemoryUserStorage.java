@@ -38,8 +38,8 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public void addFriend(Long userId, Long friendUserId) {
-        users.get(userId).getFriends().add(friendUserId);
-        users.get(friendUserId).getFriends().add(userId);
+        users.get(userId).getFriends().put(friendUserId, false);
+        users.get(friendUserId).getFriends().put(userId, false);
     }
 
     @Override
@@ -50,16 +50,16 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public List<User> getFriendsByUserId(Long userId) {
-        return users.get(userId).getFriends().stream()
+        return users.get(userId).getFriends().keySet().stream()
                 .map(users::get).toList();
     }
 
     @Override
     public List<User> getMutualFriends(Long userId, Long otherUserId) {
-        List<User> friendsOfUser = users.get(userId).getFriends().stream()
+        List<User> friendsOfUser = users.get(userId).getFriends().keySet().stream()
                 .map(users::get).toList();
 
-        List<User> friendsOfOtherUser = users.get(otherUserId).getFriends().stream()
+        List<User> friendsOfOtherUser = users.get(otherUserId).getFriends().keySet().stream()
                 .map(users::get).toList();
 
         return friendsOfUser.stream()

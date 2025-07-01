@@ -22,7 +22,7 @@ class FilmControllerTest {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> postRequest = new HttpEntity<>("{\"name\":\"name\",\"description\":\"description\"," +
-                "\"releaseDate\":\"1899-01-01\",\"duration\":120}", httpHeaders);
+                "\"releaseDate\":\"1899-01-01\",\"duration\":120,\"mpa\":{\"id\":1}}", httpHeaders);
 
         ResponseEntity<Film> postResponse = restTemplate.postForEntity(
                 "/films",
@@ -46,7 +46,7 @@ class FilmControllerTest {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> postRequest = new HttpEntity<>("{\"name\":\"name\",\"description\":\"description\"," +
-                "\"releaseDate\":\"1899-01-01\",\"duration\":120}", httpHeaders);
+                "\"releaseDate\":\"1899-01-01\",\"duration\":120,\"mpa\":{\"id\":1}}", httpHeaders);
 
         ResponseEntity<Film> postResponse = restTemplate.postForEntity(
                 "/films",
@@ -70,7 +70,7 @@ class FilmControllerTest {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> postRequest = new HttpEntity<>("{\"name\":\"name\",\"description\":\"description\"," +
-                "\"releaseDate\":\"1899-01-01\",\"duration\":120}", httpHeaders);
+                "\"releaseDate\":\"1899-01-01\",\"duration\":120,\"mpa\":{\"id\":1}}", httpHeaders);
 
         ResponseEntity<Film> postResponse = restTemplate.postForEntity(
                 "/films",
@@ -87,7 +87,7 @@ class FilmControllerTest {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> postRequest = new HttpEntity<>("{\"name\":\"name\",\"description\":\"description\"," +
-                "\"releaseDate\":\"1899-01-01\",\"duration\":120}", httpHeaders);
+                "\"releaseDate\":\"1899-01-01\",\"duration\":120,\"mpa\":{\"id\":1}}", httpHeaders);
 
         ResponseEntity<Film> postResponse = restTemplate.postForEntity(
                 "/films",
@@ -101,7 +101,7 @@ class FilmControllerTest {
         HttpEntity<String> putRequest = new HttpEntity<>("{\"id\":1,\"name\":\"name_new\"," +
                 "\"description\":\"description_new\"," +
                 "\"releaseDate\":\"2003-01-01\"," +
-                "\"duration\":180}",
+                "\"duration\":180,\"mpa\":{\"id\":1}}",
                 httpHeaders);
 
         ResponseEntity<Film> putResponse = restTemplate.exchange("/films", HttpMethod.PUT, putRequest, Film.class);
@@ -129,7 +129,7 @@ class FilmControllerTest {
 
         //название не может быть пустым
         HttpEntity<String> postRequest = new HttpEntity<>("{\"name\":null,\"description\":\"description\"," +
-                "\"releaseDate\":\"1899-01-01\",\"duration\":120}", httpHeaders);
+                "\"releaseDate\":\"1899-01-01\",\"duration\":120,\"mpa\":{\"id\":1}}", httpHeaders);
         ResponseEntity<Film> postResponse = restTemplate.postForEntity(
                 "/films",
                 postRequest,
@@ -143,7 +143,7 @@ class FilmControllerTest {
                 "\"description\":\"V?W&,RL8an5]4;1dK8S$RwrhUuS;jjDHGVuN}xU%kWpw=E=[{)EvzD$1y64D63P/#XUxY2)#m_%*fy-pS" +
                 "TCFh0C%[ug}Bpzhu@)SW}}%v*K+V=E8LyLD40y1Jx+1b5zHjwz$}AY!/q=YvVffd-[:Kbkb.Y&6GM,Fu3mcq%n8.Y[HbK%f36gBT." +
                 "QVM,#)YXzpFJRU4+Ae3\"," +
-                "\"releaseDate\":\"1899-01-01\",\"duration\":120}", httpHeaders);
+                "\"releaseDate\":\"1899-01-01\",\"duration\":120,\"mpa\":{\"id\":1}}", httpHeaders);
         postResponse = restTemplate.postForEntity(
                 "/films",
                 postRequest,
@@ -156,7 +156,7 @@ class FilmControllerTest {
                 "\"description\":\"V?W&,RL8an5]4;1dK8S$RwrhUuS;jjDHGVuN}xU%kWpw=E=[{)EvzD$1y64D63P/#XUxY2)#m_%*fy-pS" +
                 "TCFh0C%[ug}Bpzhu@)SW}}%v*K+V=E8LyLD40y1Jx+1b5zHjwz$}AY!/q=YvVffd-[:Kbkb.Y&6GM,Fu3mcq%n8.Y[HbK%f36gBT." +
                 "QVM,#)YXzpFJRU4+Ae\"," +
-                "\"releaseDate\":\"1899-01-01\",\"duration\":120}", httpHeaders);
+                "\"releaseDate\":\"1899-01-01\",\"duration\":120,\"mpa\":{\"id\":1}}", httpHeaders);
         postResponse = restTemplate.postForEntity(
                 "/films",
                 postRequest,
@@ -169,7 +169,7 @@ class FilmControllerTest {
                 "\"description\":\"V?W&,RL8an5]4;1dK8S$RwrhUuS;jjDHGVuN}xU%kWpw=E=[{)EvzD$1y64D63P/#XUxY2)#m_%*fy-pS" +
                 "TCFh0C%[ug}Bpzhu@)SW}}%v*K+V=E8LyLD40y1Jx+1b5zHjwz$}AY!/q=YvVffd-[:Kbkb.Y&6GM,Fu3mcq%n8.Y[HbK%f36gBT." +
                 "QVM,#)YXzpFJRU4+A\"," +
-                "\"releaseDate\":\"1899-01-01\",\"duration\":120}", httpHeaders);
+                "\"releaseDate\":\"1899-01-01\",\"duration\":120,\"mpa\":{\"id\":1}}", httpHeaders);
         postResponse = restTemplate.postForEntity(
                 "/films",
                 postRequest,
@@ -181,7 +181,7 @@ class FilmControllerTest {
         //раньше 28 декабря 1895 года
         postRequest = new HttpEntity<>("{\"name\":\"name\"," +
                 "\"description\":\"V?W&,RL8an5]4;\"," +
-                "\"releaseDate\":\"1895-12-27\",\"duration\":120}", httpHeaders);
+                "\"releaseDate\":\"1895-12-27\",\"duration\":120,\"mpa\":{\"id\":1}}", httpHeaders);
         postResponse = restTemplate.postForEntity(
                 "/films",
                 postRequest,
@@ -192,7 +192,7 @@ class FilmControllerTest {
         //28 декабря 1895 года
         postRequest = new HttpEntity<>("{\"name\":\"name\"," +
                 "\"description\":\"V?W&,RL8an5]4;\"," +
-                "\"releaseDate\":\"1895-12-28\",\"duration\":120}", httpHeaders);
+                "\"releaseDate\":\"1895-12-28\",\"duration\":120,\"mpa\":{\"id\":1}}", httpHeaders);
         postResponse = restTemplate.postForEntity(
                 "/films",
                 postRequest,
@@ -204,7 +204,7 @@ class FilmControllerTest {
         //после 28 декабря 1895 года
         postRequest = new HttpEntity<>("{\"name\":\"name\"," +
                 "\"description\":\"V?W&,RL8an5]4;\"," +
-                "\"releaseDate\":\"1895-12-29\",\"duration\":120}", httpHeaders);
+                "\"releaseDate\":\"1895-12-29\",\"duration\":120,\"mpa\":{\"id\":1}}", httpHeaders);
         postResponse = restTemplate.postForEntity(
                 "/films",
                 postRequest,
@@ -216,7 +216,7 @@ class FilmControllerTest {
         //отрицательное
         postRequest = new HttpEntity<>("{\"name\":\"name\"," +
                 "\"description\":\"V?W&,RL8an5]4;\"," +
-                "\"releaseDate\":\"1895-12-29\",\"duration\":-1}", httpHeaders);
+                "\"releaseDate\":\"1895-12-29\",\"duration\":-1,\"mpa\":{\"id\":1}}", httpHeaders);
         postResponse = restTemplate.postForEntity(
                 "/films",
                 postRequest,
@@ -227,7 +227,7 @@ class FilmControllerTest {
         // ноль
         postRequest = new HttpEntity<>("{\"name\":\"name\"," +
                 "\"description\":\"V?W&,RL8an5]4;\"," +
-                "\"releaseDate\":\"1895-12-29\",\"duration\":0}", httpHeaders);
+                "\"releaseDate\":\"1895-12-29\",\"duration\":0,\"mpa\":{\"id\":1}}", httpHeaders);
         postResponse = restTemplate.postForEntity(
                 "/films",
                 postRequest,
@@ -238,7 +238,7 @@ class FilmControllerTest {
         // положительное
         postRequest = new HttpEntity<>("{\"name\":\"name\"," +
                 "\"description\":\"V?W&,RL8an5]4;\"," +
-                "\"releaseDate\":\"1895-12-29\",\"duration\":120}", httpHeaders);
+                "\"releaseDate\":\"1895-12-29\",\"duration\":120,\"mpa\":{\"id\":1}}", httpHeaders);
         postResponse = restTemplate.postForEntity(
                 "/films",
                 postRequest,
@@ -252,7 +252,7 @@ class FilmControllerTest {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> postRequest = new HttpEntity<>("{\"name\":\"name\",\"description\":\"description\"," +
-                "\"releaseDate\":\"1899-01-01\",\"duration\":120}", httpHeaders);
+                "\"releaseDate\":\"1899-01-01\",\"duration\":120,\"mpa\":{\"id\":1}}", httpHeaders);
 
         ResponseEntity<Film> postResponse = restTemplate.postForEntity(
                 "/films",
@@ -293,7 +293,7 @@ class FilmControllerTest {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> postRequest = new HttpEntity<>("{\"name\":\"name\",\"description\":\"description\"," +
-                "\"releaseDate\":\"1899-01-01\",\"duration\":120}", httpHeaders);
+                "\"releaseDate\":\"1899-01-01\",\"duration\":120,\"mpa\":{\"id\":1}}", httpHeaders);
 
         ResponseEntity<Film> postResponse = restTemplate.postForEntity(
                 "/films",
@@ -344,7 +344,7 @@ class FilmControllerTest {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> postRequest = new HttpEntity<>("{\"name\":\"name\",\"description\":\"description\"," +
-                "\"releaseDate\":\"1899-01-01\",\"duration\":120}", httpHeaders);
+                "\"releaseDate\":\"1899-01-01\",\"duration\":120,\"mpa\":{\"id\":1}}", httpHeaders);
 
         ResponseEntity<Film> postResponse = restTemplate.postForEntity(
                 "/films",

@@ -1,2 +1,2 @@
 # java-filmorate
-Template repository for Filmorate project.
+![ER-Diagram of the project](/assets/filmorate.png)
